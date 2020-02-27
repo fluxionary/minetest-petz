@@ -257,9 +257,9 @@ function petz.set_initial_properties(self, staticdata, dtime_s)
 			self.wolf_to_puppy_count = mobkit.remember(self, "wolf_to_puppy_count", tonumber(static_data_table["fields"]["wolf_to_puppy_count"])) 
 		end
 		if self.is_mountable == true then		
-			self.saddle = minetest.is_yes(static_data_table["fields"]["saddle"])	
-			self.saddlebag = minetest.is_yes(static_data_table["fields"]["saddlebag"])
-			self.saddlebag_inventory = minetest.deserialize(static_data_table["fields"]["saddlebag_inventory"])
+			self.saddle = mobkit.remember(self, "saddle", minetest.is_yes(static_data_table["fields"]["saddle"]))
+			self.saddlebag = mobkit.remember(self, "saddlebag", minetest.is_yes(static_data_table["fields"]["saddlebag"]))
+			self.saddlebag_inventory = mobkit.remember(self, "saddlebag_inventory", minetest.deserialize(static_data_table["fields"]["saddlebag_inventory"]))
 			self.max_speed_forward = mobkit.remember(self, "max_speed_forward", tonumber(static_data_table["fields"]["max_speed_forward"]	)) 
 			self.max_speed_reverse = mobkit.remember(self, "max_speed_reverse", tonumber(static_data_table["fields"]["max_speed_reverse"])) 
 			self.accel = mobkit.remember(self, "accel", tonumber(static_data_table["fields"]["accel"])) 			
