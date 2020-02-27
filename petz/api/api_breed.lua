@@ -86,38 +86,26 @@ petz.childbirth = function(self)
 	return baby_entity
 end
 
+local function fuzzy_average(v1, v2)
+	v1 = v1 or 1
+	local fuzz = math.random(-1, 1)
+	local tie_breaker = math.random(2) == 1 and -0.1 or 0.1
+	local new_v = petz.round(((v1 + v2) / 2) + tie_breaker, 0) + fuzz
+        return math.max(0, math.min(new_v, 10))
+end
+
 petz.pregnant_timer = function(self, dtime)
 	self.pregnant_time = mobkit.remember(self, "pregnant_time", self.pregnant_time + dtime) 
 	if self.pregnant_time >= petz.settings.pregnancy_time then
 		local baby_entity = petz.childbirth(self)
 		if self.is_mountable == true then		
 			--Set the genetics accordingly the father and the mother
-			local random_number = math.random(-1, 1)
-			local new_max_speed_forward = petz.round(((self.father_veloc_stats["max_speed_forward"] or 1) + self.max_speed_forward)/2, 0) + random_number
-			if new_max_speed_forward <= 0 then
-				new_max_speed_forward = 0
-			elseif new_max_speed_forward > 10 then
-				new_max_speed_forward = 10
-			end
-			random_number = math.random(-1, 1)
-			local new_max_speed_reverse = petz.round(((self.father_veloc_stats["max_speed_reverse"] or 1) + self.max_speed_reverse)/2, 0) + random_number
-			if new_max_speed_reverse <= 0 then
-				new_max_speed_reverse = 0
-			elseif new_max_speed_reverse > 10 then
-				new_max_speed_reverse = 10
-			end
-			random_number = math.random(-1, 1)
-			local new_accel  = petz.round(((self.father_veloc_stats["accel"] or 1) + self.accel)/2, 0) + random_number
-			if new_accel <= 0 then
-				new_accel = 0
-			elseif new_accel > 10 then
-				new_accel = 10
-			end
-			baby_entity.max_speed_forward = new_max_speed_forward
+			local father_veloc_stats = self.father_veloc_stats
+			baby_entity.max_speed_forward = fuzzy_average(father_veloc_stats.max_speed_forward, self.max_speed_forward)
 			mobkit.remember(baby_entity, "max_speed_forward", baby_entity.max_speed_forward)
-			baby_entity.max_speed_reverse = new_max_speed_reverse
+			baby_entity.max_speed_reverse = fuzzy_average(father_veloc_stats.max_speed_reverse, self.max_speed_reverse)
 			mobkit.remember(baby_entity, "max_speed_reverse", baby_entity.max_speed_reverse)
-			baby_entity.accel = new_accel
+			baby_entity.accel = fuzzy_average(father_veloc_stats.accel, self.accel)
 			mobkit.remember(baby_entity, "accel", baby_entity.accel)				
 		end
 	end
